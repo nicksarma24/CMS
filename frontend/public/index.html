@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Dev Server</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script>
+        // override default onerror handler
+        window.onload = function () {
+        // enable console listener in parent
+        if (document.referrer) {
+            window.parent.postMessage({ type: "init" }, document.referrer);
+        }
+        window.onerror = function (event, source, lineno, colno, error) {
+            return true;
+        };
+        };
+    
+        // Save the original console functions
+        const consoleLog = console.log;
+        const consoleError = console.error;
+        const consoleWarn = console.warn;
+        const consoleInfo = console.info;
+    
+        console.log = function () {
+        const log = Array.from(arguments)
+            .map((argument) => JSON.stringify(argument))
+            .join(" ");
+    
+        if (document.referrer) {
+            window.parent.postMessage({ type: "log", payload: log }, document.referrer);
+        }
+        consoleLog.apply(console, arguments);
+        };
+    
+        console.warn = function () {
+        const warn = Array.from(arguments).join(" ");
+    
+        if (document.referrer) {
+            window.parent.postMessage(
+            { type: "warn", payload: warn },
+            document.referrer
+            );
+        }
+        consoleWarn.apply(console, arguments);
+        };
+    
+        console.info = function () {
+        const info = Array.from(arguments)
+            .map((argument) => JSON.stringify(argument))
+            .join(" ");
+    
+        if (document.referrer) {
+            window.parent.postMessage(
+            { type: "info", payload: info },
+            document.referrer
+            );
+        }
+        consoleInfo.apply(console, arguments);
+        };
+    
+        console.error = function () {
+        const error = Array.from(arguments).join(" ");
+        if (document.referrer) {
+            window.parent.postMessage(
+            { type: "error", payload: error },
+            document.referrer
+            );
+        }
+        consoleError.apply(console, arguments);
+        };
+    </script>    
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>

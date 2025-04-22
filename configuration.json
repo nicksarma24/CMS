@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "read_only_files": [
+    "configuration.json",
+    "frontend/.gitignore",
+    "frontend/src/App.test.js",
+    "backend/.gitignore",
+    "backend/StudentModel.Test/UnitTest1.cs",
+    "backend/global.json",
+    "backend/StudentModel.Test/StudentModel.Test.csproj",
+    "backend/StudentModel.WebAPI/StudentModel.WebAPI.csproj",
+    "backend/StudentModel.WebAPI/Models/Student.cs",
+    "backend/StudentModel.WebAPI/Models/StudentContext.cs",
+    "backend/StudentModel.WebAPI/Properties/launchSettings.json",
+    "backend/StudentModel.WebAPI/appsettings.Development.json",
+    "backend/StudentModel.WebAPI/appsettings.json",
+    "backend/StudentModel.WebAPI/init.sql",
+    "backend/StudentModel.WebAPI/Program.cs",
+    "backend/StudentModel.WebAPI.sln"
+  ],
+  "default_open_files": [
+    "backend/StudentModel.WebAPI/Controllers/StudentController.cs",
+    "backend/StudentModel.WebAPI/Services/StudentServices.cs",
+    "frontend/src/Components/AddStudent.js",
+    "frontend/src/Components/StudentsData.js",
+    "frontend/src/App.js"
+  ],
+  "scoring": {
+    "command": "cd $HOME/$NAME/frontend && npm install && npm test ; cd $HOME/$NAME/backend && dotnet build && dotnet test --logger:junit --results-directory ./reports/",
+    "files": {
+      "backend/reports/TestResults.xml": ".Net Backend",
+      "frontend/junit.xml": "React"
+    }
+  },
+  "buttons": {
+    "Backend > Init": {
+      "command": "cd $HOME/$NAME/backend && dotnet build"
+    },
+    "Backend > Start Server": {
+      "command": "cd $HOME/$NAME/backend && dotnet run --project StudentModel.WebAPI",
+      "dependencies": [
+        "cd $HOME/$NAME/backend && dotnet build"
+      ]
+    },
+    "Backend > Run TestCases": {
+      "command": "cd $HOME/$NAME/backend && dotnet test",
+      "dependencies": [
+        "cd $HOME/$NAME/backend && dotnet build"
+      ]
+    },
+    "Frontend > Init": {
+      "command": "cd $HOME/$NAME/frontend && npm install"
+    },
+    "Frontend > Start Server": {
+      "command": "cd $HOME/$NAME/frontend && npm start",
+      "dependencies": [
+        "cd $HOME/$NAME/frontend && npm install"
+      ]
+    },
+    "Frontend > Run TestCases": {
+      "command": "cd $HOME/$NAME/frontend && npm test",
+      "dependencies": [
+        "cd $HOME/$NAME/frontend && npm install"
+      ]
+    },
+    "SQLite > Launch CLI": {
+      "command": "cd $HOME/$NAME/backend/StudentModel.WebAPI && sqlite3 sqlite.db < init.sql && sqlite3 sqlite.db"
+    },
+    "Reset": {
+      "command": "cd $HOME/$NAME && /bin/bash -cx /tmp/setup_workspaces.sh"
+    }
+  },
+  "post_start": {
+    "commands": [
+      "cd $HOME/$NAME/frontend && npm install",
+      "cd $HOME/$NAME/backend && dotnet build",
+      "cd $HOME/$NAME/backend && dotnet ef database update --project StudentModel.WebAPI",
+      "cd $HOME/$NAME/backend/StudentModel.WebAPI && sqlite3 sqlite.db < init.sql && sqlite3 sqlite.db"
+    ]
+  },
+  "preview_port": 8000
+}
